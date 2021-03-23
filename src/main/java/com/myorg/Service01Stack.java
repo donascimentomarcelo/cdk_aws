@@ -8,6 +8,9 @@ import software.amazon.awscdk.services.ecs.patterns.ApplicationLoadBalancedTaskI
 import software.amazon.awscdk.services.elasticloadbalancingv2.HealthCheck;
 import software.amazon.awscdk.services.logs.LogGroup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Service01Stack extends Stack {
     public Service01Stack(final Construct scope, final String id, final Cluster cluster) {
         this(scope, id, null, cluster);
@@ -15,6 +18,11 @@ public class Service01Stack extends Stack {
 
     public Service01Stack(final Construct scope, final String id, final StackProps props, final Cluster cluster) {
         super(scope, id, props);
+
+        Map<String, String> envVariables = new HashMap<>();
+        envVariables.put("SPRING_DATASOURCE_URL", "jdbc:mariadb://" + Fn.importValue("rds-endpoint") + ":3306/aws_project?createDatabaseIfNotExists=true");
+        envVariables.put("SPRING_DATASOURCE_USERNAME", "admin");
+        envVariables.put("SPRING_DATASOURCE_PASSWORD", Fn.importValue("rds-password"));
 
         ApplicationLoadBalancedFargateService service01 = ApplicationLoadBalancedFargateService.Builder.create(this, "ALB01")
                     .serviceName("servico-01")
@@ -27,7 +35,7 @@ public class Service01Stack extends Stack {
                             ApplicationLoadBalancedTaskImageOptions
                                 .builder()
                                 .containerName("aws_project")
-                                .image(ContainerImage.fromRegistry("donascimentomarcelo/awsproject:1.0.0"))
+                                .image(ContainerImage.fromRegistry("donascimentomarcelo/awsproject:1.0.1"))
                                 .containerPort(8080)
                                 .logDriver(LogDriver.awsLogs(AwsLogDriverProps.builder()
                                     .logGroup(LogGroup.Builder.create(this, "Service01LogGroup")
@@ -35,8 +43,9 @@ public class Service01Stack extends Stack {
                                         .removalPolicy(RemovalPolicy.DESTROY)
                                         .build())
                                     .streamPrefix("Service01")
-                                    .build())
-                        ).build())
+                                    .build()))
+                            .environment(envVariables)
+                            .build())
                 .publicLoadBalancer(true)
                 .build();
 
