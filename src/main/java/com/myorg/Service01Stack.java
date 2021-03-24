@@ -35,7 +35,7 @@ public class Service01Stack extends Stack {
                             ApplicationLoadBalancedTaskImageOptions
                                 .builder()
                                 .containerName("aws_project")
-                                .image(ContainerImage.fromRegistry("donascimentomarcelo/awsproject:1.0.1"))
+                                .image(ContainerImage.fromRegistry("donascimentomarcelo/awsproject:1.3.2"))
                                 .containerPort(8080)
                                 .logDriver(LogDriver.awsLogs(AwsLogDriverProps.builder()
                                     .logGroup(LogGroup.Builder.create(this, "Service01LogGroup")
@@ -70,5 +70,6 @@ public class Service01Stack extends Stack {
                 .scaleInCooldown(Duration.seconds(60))
                 .scaleOutCooldown(Duration.seconds(60))
                 .build());
+        System.out.println("");
     }
 }
