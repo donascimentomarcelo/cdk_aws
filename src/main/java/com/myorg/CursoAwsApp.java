@@ -22,6 +22,8 @@ public class CursoAwsApp {
         final RdsStack rdsStack = new RdsStack(app, "Rds", vpcStack.getVpc());
         rdsStack.addDependency(vpcStack);
 
+        final SnsStack snsStack = new SnsStack(app, "Sns");
+
         final Service01Stack service01Stack = new Service01Stack(app, SERVICE_NAME, clusterStack.getCluster());
         service01Stack.addDependency(clusterStack);
         service01Stack.addDependency(rdsStack);
