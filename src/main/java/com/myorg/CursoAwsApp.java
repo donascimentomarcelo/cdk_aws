@@ -9,7 +9,8 @@ public class CursoAwsApp {
 
     private static final String VPC_NAME = "Vpc";
     private static final String CLUSTER_NAME = "Cluster";
-    private static final String SERVICE_NAME = "Service";
+    private static final String SERVICE_NAME_01 = "Service01";
+    private static final String SERVICE_NAME_02 = "Service02";
     private static final String RDS_NAME = "Rds";
     private static final String SNS_NAME = "Sns";
 
@@ -26,10 +27,12 @@ public class CursoAwsApp {
 
         final SnsStack snsStack = new SnsStack(app, SNS_NAME);
 
-        final Service01Stack service01Stack = new Service01Stack(app, SERVICE_NAME, clusterStack.getCluster(), snsStack.getProductEventTopic());
+        final Service01Stack service01Stack = new Service01Stack(app, SERVICE_NAME_01, clusterStack.getCluster(), snsStack.getProductEventTopic());
         service01Stack.addDependency(clusterStack);
         service01Stack.addDependency(rdsStack);
         service01Stack.addDependency(snsStack);
+
+        final Service02Stack service02Stack = new Service02Stack(app, SERVICE_NAME_02, clusterStack.getCluster());
 
         app.synth();
     }
