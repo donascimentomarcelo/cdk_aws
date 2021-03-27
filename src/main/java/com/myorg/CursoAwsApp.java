@@ -33,6 +33,7 @@ public class CursoAwsApp {
         service01Stack.addDependency(snsStack);
 
         final Service02Stack service02Stack = new Service02Stack(app, SERVICE_NAME_02, clusterStack.getCluster(), snsStack.getProductEventTopic());
+        service02Stack.addDependency(clusterStack);
         service02Stack.addDependency(snsStack);
 
         app.synth();
